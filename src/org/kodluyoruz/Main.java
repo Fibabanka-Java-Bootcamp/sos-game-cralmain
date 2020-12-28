@@ -7,138 +7,175 @@ public class Main {
     public static void main(String[] args){
 
         boolean game=true;
-
         Random random = new Random();
+        Scanner scanner=new Scanner(System.in);
+        int size=0;
 
-        while (game){
 
-            Scanner scanner=new Scanner(System.in);
+        int control=1;
+
+        while (control!=0){
+
             System.out.print("Enter size:");
-            int size=scanner.nextInt();
+            size =scanner.nextInt();
 
             if(!(size>=3 && size<=7)){
 
                 System.out.println("Index must be beetween 3 and 7");
                 continue;
             }
-
-            String matris[][] = new String[size][size];
-
-
-            int diagonalValues[][][] =new int[400][2][3];
-            int verticalValues[][][] =new int[200][2][3];
-            int horizontalValues[][][] =new int[200][2][3];
-
-            int[] playerScore= new int[1];
-            int[] aiScore= new int[1];
-
-            int[] diagonalCounter= new int[1];
-            int[] verticalCounter= new int[1];
-            int[] horizontalCounter= new int[1];
+            control--;
+        }
 
 
-            playerScore[0]=0;
-            aiScore[0]=0;
 
-            diagonalCounter[0]=0;
-            verticalCounter[0]=0;
-            horizontalCounter[0]=0;
+        String matris[][] = new String[size][size];
 
-            initalizeMatrix(matris);
+        int diagonalValues[][][] =new int[400][2][3];
+        int verticalValues[][][] =new int[200][2][3];
+        int horizontalValues[][][] =new int[200][2][3];
 
-            int whoStarts =random.nextInt((1-0)+1)+0;
+        int[] playerScore= new int[1];
+        int[] aiScore= new int[1];
+
+        int[] diagonalCounter= new int[1];
+        int[] verticalCounter= new int[1];
+        int[] horizontalCounter= new int[1];
+
+
+        playerScore[0]=0;
+        aiScore[0]=0;
+
+        diagonalCounter[0]=0;
+        verticalCounter[0]=0;
+        horizontalCounter[0]=0;
+
+        int moveCounter=0;
+
+        initalizeMatrix(matris);
+
+        int whoStarts =random.nextInt((1-0)+1)+0;
+
+        while (game){
 
             if(whoStarts==0){
 
                 System.out.println("Player starting the game.");
 
-                for(int i=0;i<size*size-2;i++){
 
-                    System.out.print("Please enter your row which you want to add:");
-                    int row = scanner.nextInt();
-                    System.out.print("Please enter your column which you want to add:");
-                    int column = scanner.nextInt();
+                if (moveCounter!=size*size) {
 
-                    if(row>=size || column>=size){
+                    int indexCount=1;
 
-                        System.out.println("Out of index.Please check your indexes.");
-                        continue;
+                    while (indexCount!=0){
+
+                        System.out.print("Please enter your row which you want to add:");
+                        int row = scanner.nextInt();
+                        System.out.print("Please enter your column which you want to add:");
+                        int column = scanner.nextInt();
+
+                        if (row >= size || column >= size) {
+
+                            System.out.println("Out of index.Please check your indexes.");
+                            continue;
+                        }
+
+                        if (matris[row][column] != "-") {
+                            System.out.println("This spot is occupied. Please try again");
+                            continue;
+                        }
+                        addValue(matris, row, column);
+                        indexCount--;
                     }
 
-                    if(matris[row][column] !="-"){
-                        System.out.println("This spot is occupied. Please try again");
-                        continue;
-                    }
 
-                    addValue(matris,row,column);
+                        verticalController(matris, verticalValues, verticalCounter, playerScore);
+                        horizontalController(matris, horizontalValues, horizontalCounter, playerScore);
+                        diagonalController(matris, diagonalValues, playerScore, diagonalCounter);
 
-                    verticalController(matris,verticalValues,verticalCounter,playerScore);
-                    horizontalCounter(matris,horizontalValues,horizontalCounter,playerScore);
-                    diagonalFind(matris,diagonalValues,playerScore,diagonalCounter);
 
-                    displayScores(playerScore,aiScore);
+                        displayScores(playerScore, aiScore);
 
-                    addValueAI(matris);
-                    verticalController(matris,verticalValues,verticalCounter,aiScore);
-                    horizontalCounter(matris,horizontalValues,horizontalCounter,aiScore);
-                    diagonalFind(matris,diagonalValues,aiScore,diagonalCounter);
-
-                    displayScores(playerScore,aiScore);
+                        moveCounter++;
 
                 }
 
-                System.out.println("Game is over");
-                game=false;
+                if(moveCounter!=size*size){
+
+                    addValueAI(matris);
+                    verticalController(matris,verticalValues,verticalCounter,aiScore);
+                    horizontalController(matris,horizontalValues,horizontalCounter,aiScore);
+                    diagonalController(matris,diagonalValues,aiScore,diagonalCounter);
+
+                    displayScores(playerScore,aiScore);
+                    moveCounter++;
+
+                }
+              if(moveCounter==size*size){
+
+                  game=false;
+              }
+
+
             }
 
             else if(whoStarts==1){
 
                 System.out.println("Ai starting the game");
 
-                for(int i=0;i<size*size-2;i++){
+                if (moveCounter!=size*size) {
 
 
                     addValueAI(matris);
-                    verticalController(matris,verticalValues,verticalCounter,aiScore);
-                    horizontalCounter(matris,horizontalValues,horizontalCounter,aiScore);
-                    diagonalFind(matris,diagonalValues,aiScore,diagonalCounter);
+                    verticalController(matris, verticalValues, verticalCounter, aiScore);
+                    horizontalController(matris, horizontalValues, horizontalCounter, aiScore);
+                    diagonalController(matris, diagonalValues, aiScore, diagonalCounter);
 
-                    displayScores(playerScore,aiScore);
+                    displayScores(playerScore, aiScore);
+                    moveCounter++;
+                }
 
-                    System.out.print("Please enter your row which you want to add:");
-                    int row = scanner.nextInt();
-                    System.out.print("Please enter your column which you want to add:");
-                    int column = scanner.nextInt();
+                if(moveCounter!=size*size){
 
-                    if(row>=size || column>=size){
+                    int indexCount=1;
 
-                        System.out.println("Out of index.Please check your indexes.");
-                        continue;
+                    while (indexCount!=0){
+
+                        System.out.print("Please enter your row which you want to add:");
+                        int row = scanner.nextInt();
+                        System.out.print("Please enter your column which you want to add:");
+                        int column = scanner.nextInt();
+
+                        if (row >= size || column >= size) {
+
+                            System.out.println("Out of index.Please check your indexes.");
+                            continue;
+                        }
+
+                        if (matris[row][column] != "-") {
+                            System.out.println("This spot is occupied. Please try again");
+                            continue;
+                        }
+                        addValue(matris, row, column);
+                        indexCount--;
                     }
-
-                    if(matris[row][column] !="-"){
-                        System.out.println("This spot is occupied. Please try again");
-                        continue;
-                    }
-
-                    addValue(matris,row,column);
-
                     verticalController(matris,verticalValues,verticalCounter,playerScore);
-                    horizontalCounter(matris,horizontalValues,horizontalCounter,playerScore);
-                    diagonalFind(matris,diagonalValues,playerScore,diagonalCounter);
+                    horizontalController(matris,horizontalValues,horizontalCounter,playerScore);
+                    diagonalController(matris,diagonalValues,playerScore,diagonalCounter);
 
                     displayScores(playerScore,aiScore);
+                    moveCounter++;
+
 
                 }
 
+                if(moveCounter==size*size){
+                    game=false;
+                }
 
-                System.out.println("Game is over");
-                game=false;
+                }
 
             }
-
-        }
-
 
     }
 
@@ -153,6 +190,8 @@ public class Main {
         }
 
     }
+
+
 
     public static void printMatris(String mat[][])
     {
@@ -308,7 +347,7 @@ public class Main {
 
 
     }
-    public static void horizontalCounter(String matrix[][],int sosIndex[][][],int[] counter,int[] score){
+    public static void horizontalController(String matrix[][],int sosIndex[][][],int[] counter,int[] score){
 
         for (int i=0;i<matrix.length;i++){
 
@@ -384,7 +423,7 @@ public class Main {
         }
     }
 
-    private static void diagonalFind(String matrix[][],int sosIndex[][][],int[] score,int[] counter) {
+    private static void diagonalController(String matrix[][],int sosIndex[][][],int[] score,int[] counter) {
 
         for(int i=0;i< matrix.length;i++){
 
